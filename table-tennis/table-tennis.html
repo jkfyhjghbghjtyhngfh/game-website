@@ -43,14 +43,7 @@
   <button onclick="startGame('Hard')">Hard</button>
   <br><br>
   <button onclick="showLeaderboard()">Leaderboard</button>
-</div>
-
-<div id="leaderboard" style="display:none;">
-  <h2>Leaderboard</h2>
-  <ol id="scoresList"></ol>
-  <button onclick="backToMenu()">Back</button>
-</div>
-
+  <button onclick="window.open('/bugs.html?title=Pong%20embed%20or%20game%20issue','_blank')" style="margin-left:8px;background:#e74c3c;color:#fff">Report a bug</button>
 <div id="gameUI" style="display:none;">
   <div id="score">Player: 0 | CPU: 0</div>
   <canvas id="pong" width="800" height="500"></canvas>
@@ -75,6 +68,7 @@ const player = { x: 10, y: canvas.height/2 - paddleHeight/2, width: paddleWidth,
 const cpu = { x: canvas.width - paddleWidth - 10, y: canvas.height/2 - paddleHeight/2, width: paddleWidth, height: paddleHeight, dy: 2 };
 
 const ball = { x: canvas.width/2 - ballSize/2, y: canvas.height/2 - ballSize/2, size: ballSize, dx: 4, dy: 4 };
+let animationFrameId = null;
 
 // Draw functions
 function drawRect(x, y, w, h, color){ context.fillStyle = color; context.fillRect(x,y,w,h); }
@@ -152,7 +146,7 @@ function draw(){
 function gameLoop(){
   update();
   draw();
-  requestAnimationFrame(gameLoop);
+  animationFrameId = requestAnimationFrame(gameLoop);
 }
 
 // Start game with difficulty
@@ -166,7 +160,8 @@ function startGame(difficulty){
   if(difficulty==='Medium') cpuSpeed=4;
   if(difficulty==='Hard') cpuSpeed=6;
   resetBall();
-  gameLoop();
+  // Prevent starting multiple parallel loops
+  if (!animationFrameId) gameLoop();
 }
 
 // End game and store score
@@ -174,6 +169,11 @@ function endGame(){
   saveScore(playerScore);
   document.getElementById('gameUI').style.display='none';
   document.getElementById('menu').style.display='block';
+  // Stop the animation frame loop if running
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
 }
 
 // Leaderboard

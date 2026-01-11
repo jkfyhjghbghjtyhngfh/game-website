@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bugs & Upgrades</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Arial;margin:2rem}
+    label{display:block;margin:0.5rem 0}
+    textarea{width:100%;min-height:100px}
+    .existing{margin-top:1.5rem}
+    .btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}
+  </style>
+</head>
+<body>
+  <h1>Bugs & Upgrades</h1>
+  <p>Report a bug or request an upgrade — the form below will open a pre-filled GitHub issue for this repository.</p>
+
+  <form id="bugForm">
+    <label>Title <input type="text" id="title" placeholder="Short summary" required></label>
+    <label>Type
+      <select id="type">
+        <option>Bug</option>
+        <option>Upgrade</option>
+      </select>
+    </label>
+    <label>Details <textarea id="body" placeholder="Steps to reproduce, expected behavior, browser, OS, etc."></textarea></label>
+    <button class="btn" type="submit">Open issue on GitHub</button>
+  </form>
+
+  <div class="existing">
+    <h2>Notes</h2>
+    <ul>
+      <li>Table Tennis is an embedded Famobi game. If it doesn't embed, open it in a new tab or report details here.</li>
+      <li>To host games locally, assets & platform shims are required and may be subject to licensing.</li>
+    </ul>
+  </div>
+
+  <script>
+    var owner = 'jkfyhjghbghjtyhngfh';
+    var repo = 'game-website';
+    document.getElementById('bugForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var t = encodeURIComponent(document.getElementById('title').value || 'Bug/Upgrade');
+      var type = encodeURIComponent(document.getElementById('type').value || 'Bug');
+      var body = encodeURIComponent('**Type:** '+type+'\n\n' + (document.getElementById('body').value || '') + '\n\n*Reported from site*');
+      var url = 'https://github.com/'+owner+'/'+repo+'/issues/new?title='+t+'&body='+body;
+      window.open(url, '_blank');
+    });
+
+    // If a `prefill` query param is present, prefill the title/body
+    var q = new URLSearchParams(location.search);
+    if (q.get('title')) document.getElementById('title').value = q.get('title');
+    if (q.get('body')) document.getElementById('body').value = q.get('body');
+  </script>
+</body>
+</html>
