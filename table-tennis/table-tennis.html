@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Tennis World Tour</title>
+  <style>
+    body, html {
+      margin: 0;
+      height: 100%;
+      background: #000;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Embed the external game -->
+  <p class="notice" id="notice">Attempting to embed the game here. If it fails, <a href="https://play.famobi.com/table-tennis-world-tour" target="_blank" rel="noopener">open in a new tab</a>.</p>
+  <div class="iframe-wrapper" style="position:relative; height:100%;">
+    <iframe id="gameFrame" src="https://play.famobi.com/table-tennis-world-tour" allowfullscreen
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      allow="fullscreen; autoplay; picture-in-picture"
+      loading="lazy"
+      style="width:100%; height:100%; border:none;"></iframe>
+    <div id="overlay" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; color:#fff; background:rgba(0,0,0,0.6); font-size:18px;">Embedding blocked — <a href="https://play.famobi.com/table-tennis-world-tour" target="_blank" rel="noopener">open in a new tab</a>.</div>
+  </div>
+  <script>
+    (function(){
+      var iframe = document.getElementById('gameFrame');
+      var overlay = document.getElementById('overlay');
+      var notice = document.getElementById('notice');
+      var loaded = false;
+      iframe.addEventListener('load', function(){
+        loaded = true;
+        try {
+          var doc = iframe.contentDocument || iframe.contentWindow.document;
+          if (!doc || (doc.body && doc.body.innerHTML.trim() === '')) {
+            overlay.style.display = 'flex';
+            notice.style.display = 'block';
+          } else {
+            overlay.style.display = 'none';
+            notice.style.display = 'none';
+          }
+        } catch (e) {
+          // Cross-origin access - assume embedding succeeded; hide notice
+          notice.style.display = 'none';
+        }
+      });
+      setTimeout(function(){
+        if (!loaded) {
+          overlay.style.display = 'flex';
+          notice.style.display = 'block';
+        }
+      }, 5000);
+    })();
+  </script>
+</body>
+</html>
