@@ -3,102 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phaser.js Game</title>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #222;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    #game-container {
-      margin: 0 auto;
-    }
-  </style>
+  <title>My Game Portal</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Collect the Coins Game</h1>
-  <div id="game-container"></div>
+  <header>
+    <h1>My Game Portal</h1>
+  </header>
 
-  <script>
-    const config = {
-      type: Phaser.AUTO,
-      width: 800,
-      height: 600,
-      backgroundColor: '#333',
-      parent: 'game-container',
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 0 },
-          debug: false
-        }
-      },
-      scene: {
-        preload: preload,
-        create: create,
-        update: update
-      }
-    };
+  <main>
+    <div class="game-list">
+      <div class="game-card">
+        <img src="games/space-shooter/thumbnail.png" alt="Space Shooter">
+        <h3>Space Shooter</h3>
+        <a href="games/space-shooter/index.html" target="_blank">Play</a>
+      </div>
+      <div class="game-card">
+        <img src="games/platformer/thumbnail.png" alt="Platformer">
+        <h3>Platformer</h3>
+        <a href="games/platformer/index.html" target="_blank">Play</a>
+      </div>
+    </div>
+  </main>
 
-    const game = new Phaser.Game(config);
-    let player;
-    let cursors;
-    let coins;
-    let score = 0;
-    let scoreText;
-
-    function preload() {
-      // Load images
-      this.load.image('player', 'https://i.imgur.com/6TQKd3r.png'); // simple square
-      this.load.image('coin', 'https://i.imgur.com/wXxT3Jh.png');   // coin image
-    }
-
-    function create() {
-      // Player
-      player = this.physics.add.sprite(400, 300, 'player');
-      player.setCollideWorldBounds(true);
-      player.setScale(0.5);
-
-      // Coins group
-      coins = this.physics.add.group({
-        key: 'coin',
-        repeat: 9,
-        setXY: { x: 50, y: 50, stepX: 70 }
-      });
-
-      coins.children.iterate((child) => {
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-      });
-
-      // Input
-      cursors = this.input.keyboard.createCursorKeys();
-
-      // Collision
-      this.physics.add.overlap(player, coins, collectCoin, null, this);
-
-      // Score
-      scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
-    }
-
-    function update() {
-      player.setVelocity(0);
-
-      if (cursors.left.isDown) player.setVelocityX(-200);
-      else if (cursors.right.isDown) player.setVelocityX(200);
-
-      if (cursors.up.isDown) player.setVelocityY(-200);
-      else if (cursors.down.isDown) player.setVelocityY(200);
-    }
-
-    function collectCoin(player, coin) {
-      coin.disableBody(true, true);
-      score += 10;
-      scoreText.setText('Score: ' + score);
-    }
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>

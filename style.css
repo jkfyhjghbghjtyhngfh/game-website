@@ -1,0 +1,6 @@
+body { font-family: Arial; background: #222; color: #fff; text-align: center; }
+header { padding: 20px; }
+.game-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+.game-card { background: #333; padding: 10px; border-radius: 8px; width: 200px; }
+.game-card img { width: 100%; border-radius: 5px; }
+.game-card a { display: block; margin-top: 10px; color: lime; text-decoration: none; font-weight: bold; }
