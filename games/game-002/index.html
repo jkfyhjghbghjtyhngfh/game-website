@@ -3,12 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 002</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Tetromino</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#111;color:#eee}canvas{background:#000;display:block;margin:0 auto;border:2px solid #444}.btn{display:inline-block;padding:0.4rem 0.6rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
 </head>
 <body>
-  <h1>Placeholder Game 002</h1>
-  <p>This is a placeholder page for Placeholder Game 002. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Tetromino (lite)</h1>
+  <p>Use ← → to move, ↑ to rotate, ↓ to drop faster.</p>
+  <canvas id='t' width='200' height='400'></canvas>
+  <p><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const c=document.getElementById('t'),g=c.getContext('2d');const cols=10,rows=20,cell=20;let grid=Array(rows).fill().map(()=>Array(cols).fill(0));const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]]];let cur={x:3,y:0,shape:shapes[Math.floor(Math.random()*shapes.length)]};function draw(){g.fillStyle='#000';g.fillRect(0,0,c.width,c.height);for(let r=0;r<rows;r++)for(let q=0;q<cols;q++)if(grid[r][q]){g.fillStyle='#39f';g.fillRect(q*cell,r*cell,cell-1,cell-1)}for(let r=0;r<cur.shape.length;r++)for(let q=0;q<cur.shape[r].length;q++)if(cur.shape[r][q])g.fillStyle='#ff0',g.fillRect((cur.x+q)*cell,(cur.y+r)*cell,cell-1,cell-1)}function collide(nx,ny,shape){for(let r=0;r<shape.length;r++)for(let q=0;q<shape[r].length;q++)if(shape[r][q]){let x=nx+q,y=ny+r;if(x<0||x>=cols||y>=rows||grid[y][x])return true}return false}function rotate(shape){let res=[];for(let x=0;x<shape[0].length;x++){res[x]=[];for(let y=shape.length-1;y>=0;y--)res[x].push(shape[y][x])}return res}document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'&&!collide(cur.x-1,cur.y,cur.shape))cur.x--;if(e.key==='ArrowRight'&&!collide(cur.x+1,cur.y,cur.shape))cur.x++;if(e.key==='ArrowUp'){let r=rotate(cur.shape);if(!collide(cur.x,cur.y,r))cur.shape=r}if(e.key==='ArrowDown'&&!collide(cur.x,cur.y+1,cur.shape))cur.y++});function drop(){if(!collide(cur.x,cur.y+1,cur.shape))cur.y++;else{for(let r=0;r<cur.shape.length;r++)for(let q=0;q<cur.shape[r].length;q++)if(cur.shape[r][q])grid[cur.y+r][cur.x+q]=1;cur={x:3,y:0,shape:shapes[Math.floor(Math.random()*shapes.length)]};for(let r=rows-1;r>=0;r--){if(grid[r].every(v=>v)){grid.splice(r,1);grid.unshift(Array(cols).fill(0));r++}}}draw()}setInterval(drop,600);draw();
+</script>
 </body>
 </html>

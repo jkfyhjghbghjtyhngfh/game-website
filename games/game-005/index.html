@@ -3,12 +3,15 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 005</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Minesweeper</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#eee;color:#111}.grid{display:grid;grid-template-columns:repeat(8,30px);grid-gap:2px;max-width:260px;margin:1rem auto}button.cell{width:30px;height:30px;background:#ccc;border:1px solid #999;font-weight:bold}</style>
 </head>
 <body>
-  <h1>Placeholder Game 005</h1>
-  <p>This is a placeholder page for Placeholder Game 005. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Minesweeper (8x8)</h1>
+  <div class='grid' id='g'></div>
+  <p style='text-align:center'><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const g=document.getElementById('g');const size=8;const bombs=10;let cells=[];for(let i=0;i<size*size;i++){let b=document.createElement('button');b.className='cell';b.dataset.i=i;g.appendChild(b);cells.push({el:b,bomb:false,open:false,flag:false})}for(let b=0,i=0;i<bombs;i++){let r=Math.floor(Math.random()*cells.length);if(cells[r].bomb){i--;continue}cells[r].bomb=true}function neighbors(i){let x=i%size,y=Math.floor(i/size);let n=[];for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){if(dx===0&&dy===0)continue;let nx=x+dx,ny=y+dy;if(nx>=0&&nx<size&&ny>=0&&ny<size)n.push(ny*size+nx)}return n}function open(i){if(cells[i].open||cells[i].flag)return;cells[i].open=true;cells[i].el.disabled=true;if(cells[i].bomb){cells[i].el.textContent='💣';alert('Game over');location.reload();return}let cnt=neighbors(i).filter(n=>cells[n].bomb).length; if(cnt)cells[i].el.textContent=cnt;else{neighbors(i).forEach(open)} }g.addEventListener('click',e=>{if(e.target.classList.contains('cell'))open(+e.target.dataset.i)})
+</script>
 </body>
 </html>

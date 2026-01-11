@@ -3,12 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 009</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Collect</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#111;color:#fff}canvas{display:block;margin:0 auto;border:2px solid #444;background:#000}.btn{display:inline-block;padding:0.4rem 0.6rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
 </head>
 <body>
-  <h1>Placeholder Game 009</h1>
-  <p>This is a placeholder page for Placeholder Game 009. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Collect!</h1>
+  <p>Move with arrow keys; collect green, avoid red.</p>
+  <canvas id='k' width='400' height='300'></canvas>
+  <p><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const c=document.getElementById('k'),ctx=c.getContext('2d');let px=200,py=150,score=0;let items=[];setInterval(()=>{if(Math.random()<0.03)items.push({x:Math.random()*c.width,y:Math.random()*c.height,type:Math.random()<0.7?'good':'bad'})},200);document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')px-=10;if(e.key==='ArrowRight')px+=10;if(e.key==='ArrowUp')py-=10;if(e.key==='ArrowDown')py+=10});function loop(){ctx.fillStyle='#000';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0f0';ctx.fillRect(px-10,py-10,20,20);for(let i=items.length-1;i>=0;i--){let it=items[i];ctx.fillStyle=it.type==='good'?'#0f0':'#f00';ctx.fillRect(it.x-6,it.y-6,12,12);if(Math.hypot(it.x-px,it.y-py)<16){if(it.type==='good')score++;else score=Math.max(0,score-1);items.splice(i,1)}}ctx.fillStyle='#fff';ctx.fillText('Score: '+score,10,12);requestAnimationFrame(loop)}loop();
+</script>
 </body>
 </html>

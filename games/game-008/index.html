@@ -3,12 +3,15 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 008</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>15 Puzzle</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#fafafa;color:#111}.board{width:320px;margin:1rem auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.tile{background:#ddd;padding:30px;text-align:center;font-size:20px;cursor:pointer}.empty{background:transparent}</style>
 </head>
 <body>
-  <h1>Placeholder Game 008</h1>
-  <p>This is a placeholder page for Placeholder Game 008. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>15 Puzzle</h1>
+  <div class='board' id='b'></div>
+  <p style='text-align:center'><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const b=document.getElementById('b');let arr=[...Array(15).keys()].map(i=>i+1);arr.push(null);arr=arr.sort(()=>Math.random()-0.5);function render(){b.innerHTML='';arr.forEach((v,i)=>{let d=document.createElement('div');d.className='tile';if(v===null){d.className+=' empty';d.textContent=''}else d.textContent=v;d.addEventListener('click',()=>{let j=arr.indexOf(null);if([j-1,j+1,j-4,j+4].includes(i)){arr[j]=arr[i];arr[i]=null;render();}});b.appendChild(d)})}render();
+</script>
 </body>
 </html>

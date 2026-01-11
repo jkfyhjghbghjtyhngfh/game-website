@@ -3,12 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 003</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Breakout</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#111;color:#eee}canvas{display:block;margin:0 auto;border:2px solid #444;background:#000}.btn{display:inline-block;padding:0.4rem 0.6rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
 </head>
 <body>
-  <h1>Placeholder Game 003</h1>
-  <p>This is a placeholder page for Placeholder Game 003. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Breakout</h1>
+  <p>Move paddle with mouse.</p>
+  <canvas id='b' width='480' height='320'></canvas>
+  <p><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const c=document.getElementById('b'),ctx=c.getContext('2d');let x=c.width/2,y=c.height-30,dx=2,dy=-2,pw=75,px=(c.width-pw)/2;let bricks=[];for(let r=0;r<5;r++){bricks[r]=[];for(let k=0;k<7;k++)bricks[r][k]=1}c.addEventListener('mousemove',e=>{const rect=c.getBoundingClientRect();px=e.clientX-rect.left-pw/2});function draw(){ctx.clearRect(0,0,c.width,c.height);ctx.beginPath();ctx.arc(x,y,10,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.fillRect(px,c.height-10,pw,10);for(let r=0;r<5;r++)for(let k=0;k<7;k++)if(bricks[r][k]){ctx.fillStyle='#39f';ctx.fillRect(k*60+10,r*20+30,50,15)}x+=dx;y+=dy; if(x+dx>c.width-10||x+dx<10)dx=-dx;if(y+dy<10)dy=-dy; if(y+dy>c.height-10){if(x>px&&x<px+pw){dy=-dy}else{document.location.reload()}}for(let r=0;r<5;r++)for(let k=0;k<7;k++)if(bricks[r][k]){let bx=k*60+35,by=r*20+37;if(x>bx-25&&x<bx+25&&y>by-10&&y<by+10){dy=-dy;bricks[r][k]=0}}requestAnimationFrame(draw)}draw();
+</script>
 </body>
 </html>

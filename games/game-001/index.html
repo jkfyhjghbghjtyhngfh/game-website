@@ -3,12 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 001</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Snake</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#111;color:#eee}canvas{background:#000;display:block;margin:0 auto;border:2px solid #444} .btn{display:inline-block;padding:0.4rem 0.6rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
 </head>
 <body>
-  <h1>Placeholder Game 001</h1>
-  <p>This is a placeholder page for Placeholder Game 001. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Snake</h1>
+  <p>Classic Snake. Use arrow keys to move.</p>
+  <canvas id='c' width='400' height='400'></canvas>
+  <p><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const canvas=document.getElementById('c');const ctx=canvas.getContext('2d');const size=20;let px=10,py=10,dx=0,dy=0,trail=[],tail=5,score=0;document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){dx=-1;dy=0}if(e.key==='ArrowUp'){dx=0;dy=-1}if(e.key==='ArrowRight'){dx=1;dy=0}if(e.key==='ArrowDown'){dx=0;dy=1}});let apple={x:15,y:8};function loop(){px+=dx;py+=dy;if(px<0)px=canvas.width/size-1;if(px>=canvas.width/size)px=0;if(py<0)py=canvas.height/size-1;if(py>=canvas.height/size)py=0;for(let t of trail)if(t.x===px&&t.y===py){tail=5;score=0;trail=[]}trail.push({x:px,y:py});while(trail.length>tail)trail.shift();if(px===apple.x&&py===apple.y){tail++;score++;apple.x=Math.floor(Math.random()*canvas.width/size);apple.y=Math.floor(Math.random()*canvas.height/size)}ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#0f0';for(let t of trail)ctx.fillRect(t.x*size,t.y*size,size-2,size-2);ctx.fillStyle='#f00';ctx.fillRect(apple.x*size,apple.y*size,size-2,size-2);ctx.fillStyle='#fff';ctx.fillText('Score:'+score,10,12)}setInterval(loop,100);
+</script>
 </body>
 </html>

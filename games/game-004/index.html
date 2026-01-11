@@ -3,12 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 004</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Flappy</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#87ceeb;color:#111}canvas{display:block;margin:1rem auto;border:2px solid #444;background:#70c5ce}.btn{display:inline-block;padding:0.4rem 0.6rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
 </head>
 <body>
-  <h1>Placeholder Game 004</h1>
-  <p>This is a placeholder page for Placeholder Game 004. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Flappy</h1>
+  <p>Click or press space to flap.</p>
+  <canvas id='f' width='320' height='480'></canvas>
+  <p><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const c=document.getElementById('f'),g=c.getContext('2d');let y=240,v=0,grav=0.5;let pipes=[];let frame=0;c.addEventListener('click',()=>v=-6);document.addEventListener('keydown',e=>{if(e.code==='Space')v=-6});function loop(){frame++;v+=grav; y+=v; if(frame%90==0){let gap=100; let top=Math.random()*(c.height-gap-80)+20; pipes.push({x:c.width,top:top,gap:gap})}for(let i=pipes.length-1;i>=0;i--){pipes[i].x-=2; if(pipes[i].x<-50)pipes.splice(i,1)}g.fillStyle='#70c5ce';g.fillRect(0,0,c.width,c.height);g.fillStyle='#0a0';for(let p of pipes){g.fillRect(p.x,0,40,p.top);g.fillRect(p.x,p.top+p.gap,40,c.height)}g.fillStyle='#ff0';g.fillRect(50,y-12,24,24); if(y<0||y>c.height){location.reload()}for(let p of pipes)if(50+24>p.x&&50< p.x+40 && (y<p.top||y>p.top+p.gap)){location.reload()}requestAnimationFrame(loop)}loop();
+</script>
 </body>
 </html>

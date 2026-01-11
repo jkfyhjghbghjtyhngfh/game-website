@@ -3,12 +3,16 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 007</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Runner</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#87ceeb;color:#111}canvas{display:block;margin:0 auto;border:2px solid #444;background:#70c5ce}.btn{display:inline-block;padding:0.4rem 0.6rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
 </head>
 <body>
-  <h1>Placeholder Game 007</h1>
-  <p>This is a placeholder page for Placeholder Game 007. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Runner</h1>
+  <p>Press space to jump.</p>
+  <canvas id='r' width='480' height='200'></canvas>
+  <p><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const c=document.getElementById('r'),ctx=c.getContext('2d');let x=50,y=150,vy=0,ground=150,ob=[];document.addEventListener('keydown',e=>{if(e.code==='Space'&&y===ground)vy=-8});function loop(){if(Math.random()<0.02)ob.push({x:c.width,y:ground-20});vy+=0.6;y+=vy;if(y>ground)y=ground,vy=0;ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#fff';ctx.fillRect(0,ground+20,c.width,20);ctx.fillStyle='#000';ctx.fillRect(x,y-20,20,20);for(let i=ob.length-1;i>=0;i--){ob[i].x-=4;ctx.fillStyle='#a00';ctx.fillRect(ob[i].x,ob[i].y,20,20);if(ob[i].x< -20)ob.splice(i,1);if(ob[i] && ob[i].x<x+20 && ob[i].x+20>x && y-20<ob[i].y+20){location.reload()}}requestAnimationFrame(loop)}loop();
+</script>
 </body>
 </html>

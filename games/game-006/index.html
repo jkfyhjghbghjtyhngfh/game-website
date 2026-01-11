@@ -3,12 +3,15 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Placeholder Game 006</title>
-<style>body{font-family:system-ui,Arial,sans-serif;padding:2rem}.btn{display:inline-block;padding:0.5rem 0.75rem;background:#0366d6;color:#fff;border-radius:4px;text-decoration:none}</style>
+<title>Memory</title>
+<style>body{font-family:system-ui,Arial,sans-serif;padding:1rem;background:#222;color:#fff}.grid{display:grid;grid-template-columns:repeat(4,70px);gap:8px;width:320px;margin:1rem auto}.card{width:70px;height:70px;background:#999;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}.matched{background:#4caf50}</style>
 </head>
 <body>
-  <h1>Placeholder Game 006</h1>
-  <p>This is a placeholder page for Placeholder Game 006. Replace with the real game files (HTML/JS/assets) to host the game here.</p>
-  <p><a class='btn' href='../games.html'>Back to Games</a> <a class='btn' href='#' onclick="alert('No game bundled yet');return false;">Play (placeholder)</a></p>
+  <h1>Memory</h1>
+  <div class='grid' id='g'></div>
+  <p style='text-align:center'><a class='btn' href='../games.html'>Back to Games</a></p>
+<script>
+const g=document.getElementById('g');let vals=[1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8];vals=vals.sort(()=>Math.random()-0.5);let first=null,second=null;vals.forEach((v,i)=>{let d=document.createElement('div');d.className='card';d.dataset.v=v;d.dataset.i=i;d.addEventListener('click',()=>{if(d.classList.contains('matched')||d===first)return;d.textContent=v;if(!first)first=d;else{second=d;if(first.dataset.v===second.dataset.v){first.classList.add('matched');second.classList.add('matched');first=null;second=null}else{setTimeout(()=>{first.textContent='';second.textContent='';first=null;second=null},600)}}});g.appendChild(d)})
+</script>
 </body>
 </html>
