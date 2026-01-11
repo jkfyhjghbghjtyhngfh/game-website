@@ -1,6 +1,22 @@
 body { font-family: Arial; background: #222; color: #fff; text-align: center; }
 header { padding: 20px; }
 .game-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
-.game-card { background: #333; padding: 10px; border-radius: 8px; width: 200px; }
+.game-card { background: #333; padding: 10px; border-radius: 8px; width: 200px; box-sizing: border-box; display: inline-block; vertical-align: top; }
 .game-card img { width: 100%; border-radius: 5px; }
-.game-card a { display: block; margin-top: 10px; color: lime; text-decoration: none; font-weight: bold; }
+.game-card a, .game-card .play-link { display: block; margin-top: 10px; color: lime; text-decoration: none; font-weight: bold; }
+
+/* Make entire card clickable when it is an anchor */
+a.game-card { display: inline-block; color: inherit; }
+
+/* Responsive adjustments for mobile */
+@media (max-width: 700px) {
+	.game-list { gap: 12px; }
+	.game-card { width: calc(50% - 16px); padding: 12px; }
+}
+
+@media (max-width: 420px) {
+	.game-card { width: 100%; }
+}
+
+/* Make canvases scale down on mobile while preserving internal resolution */
+.responsive-canvas { max-width: 100%; height: auto; display: block; margin: 0 auto; }
