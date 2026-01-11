@@ -3,36 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pong Game</title>
+<title>Pong Game with Menu & Leaderboard</title>
 <style>
   body {
     margin: 0;
     background: black;
+    color: white;
+    font-family: sans-serif;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    color: white;
-    font-family: sans-serif;
-    overflow: hidden;
+    flex-direction: column;
   }
-
   canvas {
-    background: #000;
-    display: block;
+    background: black;
     border: 2px solid white;
+    display: block;
   }
-
-  #score {
-    position: absolute;
-    top: 20px;
-    font-size: 24px;
+  #menu, #leaderboard, #gameUI {
+    text-align: center;
+  }
+  button {
+    font-size: 18px;
+    margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
-<div id="score">Player: 0 | CPU: 0</div>
-<canvas id="pong" width="800" height="500"></canvas>
+
+<div id="menu">
+  <h1>Pong</h1>
+  <p>Select Difficulty:</p>
+  <button onclick="startGame('Easy')">Easy</button>
+  <button onclick="startGame('Medium')">Medium</button>
+  <button onclick="startGame('Hard')">Hard</button>
+  <br><br>
+  <button onclick="showLeaderboard()">Leaderboard</button>
+</div>
+
+<div id="leaderboard" style="display:none;">
+  <h2>Leaderboard</h2>
+  <ol id="scoresList"></ol>
+  <button onclick="backToMenu()">Back</button>
+</div>
+
+<div id="gameUI" style="display:none;">
+  <div id="score">Player: 0 | CPU: 0</div>
+  <canvas id="pong" width="800" height="500"></canvas>
+  <br>
+  <button onclick="endGame()">Exit to Menu</button>
+</div>
 
 <script>
 const canvas = document.getElementById('pong');
@@ -44,81 +68,49 @@ const ballSize = 10;
 
 let playerScore = 0;
 let cpuScore = 0;
+let cpuSpeed = 2;
+let gameInterval;
 
-// Paddles
 const player = { x: 10, y: canvas.height/2 - paddleHeight/2, width: paddleWidth, height: paddleHeight, dy: 0 };
 const cpu = { x: canvas.width - paddleWidth - 10, y: canvas.height/2 - paddleHeight/2, width: paddleWidth, height: paddleHeight, dy: 2 };
 
-// Ball
-const ball = {
-  x: canvas.width/2 - ballSize/2,
-  y: canvas.height/2 - ballSize/2,
-  size: ballSize,
-  dx: 4 * (Math.random() > 0.5 ? 1 : -1),
-  dy: 4 * (Math.random() > 0.5 ? 1 : -1)
-};
+const ball = { x: canvas.width/2 - ballSize/2, y: canvas.height/2 - ballSize/2, size: ballSize, dx: 4, dy: 4 };
 
-// Draw everything
-function drawRect(x, y, w, h, color) {
-  context.fillStyle = color;
-  context.fillRect(x, y, w, h);
-}
+// Draw functions
+function drawRect(x, y, w, h, color){ context.fillStyle = color; context.fillRect(x,y,w,h); }
+function drawCircle(x, y, r, color){ context.fillStyle=color; context.beginPath(); context.arc(x,y,r,0,Math.PI*2); context.closePath(); context.fill(); }
+function drawNet(){ for(let i=0;i<canvas.height;i+=20){ drawRect(canvas.width/2-1,i,2,10,'white'); } }
 
-function drawCircle(x, y, r, color) {
-  context.fillStyle = color;
-  context.beginPath();
-  context.arc(x, y, r, 0, Math.PI*2);
-  context.closePath();
-  context.fill();
-}
+// Controls
+document.addEventListener('keydown',(e)=>{ if(e.key==='ArrowUp') player.dy=-6; if(e.key==='ArrowDown') player.dy=6; });
+document.addEventListener('keyup',(e)=>{ if(e.key==='ArrowUp'||e.key==='ArrowDown') player.dy=0; });
 
-function drawNet() {
-  for(let i = 0; i < canvas.height; i += 20) {
-    drawRect(canvas.width/2 - 1, i, 2, 10, 'white');
-  }
-}
-
-// Control player
-document.addEventListener('keydown', (e) => {
-  if(e.key === 'ArrowUp') player.dy = -6;
-  if(e.key === 'ArrowDown') player.dy = 6;
-});
-
-document.addEventListener('keyup', (e) => {
-  if(e.key === 'ArrowUp' || e.key === 'ArrowDown') player.dy = 0;
-});
-
-// Move everything
+// Update game objects
 function update() {
-  // Move paddles
   player.y += player.dy;
-
-  if(player.y < 0) player.y = 0;
-  if(player.y + paddleHeight > canvas.height) player.y = canvas.height - paddleHeight;
+  if(player.y<0) player.y=0;
+  if(player.y + paddleHeight>canvas.height) player.y=canvas.height-paddleHeight;
 
   // CPU AI
-  if(ball.y < cpu.y + cpu.height/2) cpu.y -= cpu.dy;
-  if(ball.y > cpu.y + cpu.height/2) cpu.y += cpu.dy;
+  if(ball.y < cpu.y + cpu.height/2) cpu.y -= cpuSpeed;
+  if(ball.y > cpu.y + cpu.height/2) cpu.y += cpuSpeed;
+  if(cpu.y<0) cpu.y=0;
+  if(cpu.y+paddleHeight>canvas.height) cpu.y=canvas.height-paddleHeight;
 
-  if(cpu.y < 0) cpu.y = 0;
-  if(cpu.y + paddleHeight > canvas.height) cpu.y = canvas.height - paddleHeight;
-
-  // Move ball
+  // Ball movement
   ball.x += ball.dx;
   ball.y += ball.dy;
 
-  // Collisions with top/bottom
-  if(ball.y < 0 || ball.y + ball.size > canvas.height) ball.dy *= -1;
+  if(ball.y<0 || ball.y+ball.size>canvas.height) ball.dy *= -1;
 
-  // Collisions with paddles
+  // Collision with paddles
   if(ball.x < player.x + player.width &&
      ball.x > player.x &&
      ball.y + ball.size > player.y &&
      ball.y < player.y + player.height) {
        ball.dx *= -1;
-       // Add spin
        let collidePoint = ball.y - (player.y + player.height/2);
-       collidePoint = collidePoint / (player.height/2);
+       collidePoint /= (player.height/2);
        ball.dy = collidePoint * 5;
   }
 
@@ -128,47 +120,88 @@ function update() {
      ball.y < cpu.y + cpu.height) {
        ball.dx *= -1;
        let collidePoint = ball.y - (cpu.y + cpu.height/2);
-       collidePoint = collidePoint / (cpu.height/2);
+       collidePoint /= (cpu.height/2);
        ball.dy = collidePoint * 5;
   }
 
   // Score
-  if(ball.x < 0) {
-    cpuScore++;
-    resetBall();
-  } else if(ball.x + ball.size > canvas.width) {
-    playerScore++;
-    resetBall();
-  }
+  if(ball.x < 0){ cpuScore++; resetBall(); }
+  if(ball.x + ball.size > canvas.width){ playerScore++; resetBall(); }
 
   document.getElementById('score').textContent = `Player: ${playerScore} | CPU: ${cpuScore}`;
 }
 
 // Reset ball
-function resetBall() {
+function resetBall(){
   ball.x = canvas.width/2 - ballSize/2;
   ball.y = canvas.height/2 - ballSize/2;
-  ball.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
-  ball.dy = 4 * (Math.random() > 0.5 ? 1 : -1);
+  ball.dx = 4 * (Math.random()>0.5?1:-1);
+  ball.dy = 4 * (Math.random()>0.5?1:-1);
 }
 
-// Draw everything
-function draw() {
-  drawRect(0, 0, canvas.width, canvas.height, 'black');
+// Draw
+function draw(){
+  drawRect(0,0,canvas.width,canvas.height,'black');
   drawNet();
-  drawRect(player.x, player.y, player.width, player.height, 'white');
-  drawRect(cpu.x, cpu.y, cpu.width, cpu.height, 'white');
-  drawRect(ball.x, ball.y, ball.size, ball.size, 'white');
+  drawRect(player.x,player.y,player.width,player.height,'white');
+  drawRect(cpu.x,cpu.y,cpu.width,cpu.height,'white');
+  drawRect(ball.x,ball.y,ball.size,ball.size,'white');
 }
 
 // Game loop
-function gameLoop() {
+function gameLoop(){
   update();
   draw();
   requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+// Start game with difficulty
+function startGame(difficulty){
+  document.getElementById('menu').style.display='none';
+  document.getElementById('leaderboard').style.display='none';
+  document.getElementById('gameUI').style.display='block';
+  
+  playerScore = 0; cpuScore = 0;
+  if(difficulty==='Easy') cpuSpeed=2;
+  if(difficulty==='Medium') cpuSpeed=4;
+  if(difficulty==='Hard') cpuSpeed=6;
+  resetBall();
+  gameLoop();
+}
+
+// End game and store score
+function endGame(){
+  saveScore(playerScore);
+  document.getElementById('gameUI').style.display='none';
+  document.getElementById('menu').style.display='block';
+}
+
+// Leaderboard
+function saveScore(score){
+  let scores = JSON.parse(localStorage.getItem('pongScores'))||[];
+  scores.push(score);
+  scores.sort((a,b)=>b-a);
+  if(scores.length>5) scores=scores.slice(0,5);
+  localStorage.setItem('pongScores',JSON.stringify(scores));
+}
+
+function showLeaderboard(){
+  document.getElementById('menu').style.display='none';
+  document.getElementById('leaderboard').style.display='block';
+  let scores = JSON.parse(localStorage.getItem('pongScores'))||[];
+  const list = document.getElementById('scoresList');
+  list.innerHTML='';
+  scores.forEach(s=>{
+    const li = document.createElement('li');
+    li.textContent = s;
+    list.appendChild(li);
+  });
+}
+
+function backToMenu(){
+  document.getElementById('leaderboard').style.display='none';
+  document.getElementById('menu').style.display='block';
+}
 </script>
 </body>
 </html>
